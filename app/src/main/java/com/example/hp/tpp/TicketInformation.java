@@ -8,22 +8,22 @@ package com.example.hp.tpp;
  * @updateDes ${TODO}
  */
 public class TicketInformation {
-    private String movie_title;
-    private String cinema_title;
-    private String date_time;
-    private String shuxing;
-    private String place;
-    private String seat_location;
-    private String imageUrl;
+    private String movie_title;    //电影名字
+    private String cinema_title;   // 影院名字
+    private String date_time;      //日期
+    private String shuxing;        //国语3d
+    private String place;          //几号厅
+    private String seat_location;  //几排几座
+    private String imageUrl;       //电影海报
+    private String username;       // 用户账号
+    private String ticket_number;  //电影票张数
 
-    public TicketInformation(String movie_title, String cinema_title, String date_time, String shuxing, String place, String seat_location, String imageUrl) {
-        this.movie_title = movie_title;
-        this.cinema_title = cinema_title;
-        this.date_time = date_time;
-        this.shuxing = shuxing;
-        this.place = place;
-        this.seat_location = seat_location;
-        this.imageUrl = imageUrl;
+    public String getTicket_number() {
+        return ticket_number;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public String getMovie_title() {

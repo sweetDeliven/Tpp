@@ -48,7 +48,8 @@
         <activity android:name=".SeatSelectActivity" />
         <activity android:name=".OutTicketActivity" />
         <activity android:name=".BuySucess" />
-        <activity android:name=".TicketPage"/>
+        <activity android:name=".TicketPage" />
+
     </application>
 
 </manifest>

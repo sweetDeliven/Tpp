@@ -55,6 +55,7 @@ public class MatchSelectActivity extends AppCompatActivity {
     String movieShuxing;
     String cinemaLocation;
     String posterURL;
+    String username;
 
     @Override
     public void onCreate(Bundle saveInstanceState) {
@@ -68,6 +69,7 @@ public class MatchSelectActivity extends AppCompatActivity {
         movieShuxing=intent.getStringExtra("movieShuxing");
         cinemaLocation=intent.getStringExtra("cinemaLocation");
         posterURL=intent.getStringExtra("posterURL");
+        username = intent.getStringExtra("username");
         initView();
         initData();
     }
@@ -129,24 +131,25 @@ public class MatchSelectActivity extends AppCompatActivity {
         }
         return dft.format(endDate);
     }
-    public static void actionStart(Context context,String cinemaTitle,String movieTitle,String cinemaLocation,String movieShuxing, String posterURL) {
+    public static void actionStart(Context context,String cinemaTitle,String movieTitle,String cinemaLocation,String movieShuxing, String posterURL,String username) {
         Intent intent = new Intent(context, MatchSelectActivity.class);
         intent.putExtra("movieTitle",movieTitle);
         intent.putExtra("cinemaTitle", cinemaTitle);
         intent.putExtra("cinemaLocation",cinemaLocation);
         intent.putExtra("movieShuxing",movieShuxing);
         intent.putExtra("posterURL",posterURL);
+        intent.putExtra("username",username);
         context.startActivity(intent);
     }
 
     public void initData() {
         for (int i = 0; i < 3; i++) {
             int finalI = i;
-            DataProducer.downLoadData(movieTitle, cinemaTitle, i, list -> {
+            DataProducer.downLoadData(username,movieTitle, cinemaTitle, i, list -> {
                         if (list.size()> 0) {
                             fragments[finalI].setDataFragment(list);
                         } else {
-                           DataProducer.putDataInbackground(cinemaTitle, movieTitle, finalI, posterURL,new MyCallBack<Integer>() {
+                           DataProducer.putDataInbackground(username,cinemaTitle, movieTitle, finalI, posterURL,new MyCallBack<Integer>() {
                                @Override
                                public void onSuccess(Integer data) {
                                    if (data==2){

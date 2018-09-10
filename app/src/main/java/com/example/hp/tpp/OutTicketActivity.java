@@ -16,6 +16,12 @@ import com.avos.avoscloud.LogUtil;
 import com.avos.avoscloud.SaveCallback;
 import com.google.gson.Gson;
 
+import java.io.DataOutput;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,12 +29,21 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import retrofit2.http.POST;
+
 public class OutTicketActivity extends AppCompatActivity {
     //总价格
     TextView allPrice;
 
     //开长时间-散场时间
     TextView time;
+
+    //电影名
+    TextView movieTitle;
+
+    //影院名
+    TextView cinemaTitle;
+
 
     //几号厅  座位排列数
     TextView match_place;
@@ -45,7 +60,6 @@ public class OutTicketActivity extends AppCompatActivity {
     TicketInformation mTicketInformation;
 
 
-
     String cinema_title;
     String[] seats = new String[3];
     Intent mIntent;
@@ -59,14 +73,18 @@ public class OutTicketActivity extends AppCompatActivity {
     }
 
     public void initView() {
-        back=findViewById(R.id.back_out_ticket);
+        back = findViewById(R.id.back_out_ticket);
         sure_buy = findViewById(R.id.sure_buy);
         time = findViewById(R.id.out_ticket_time);
         match_place = findViewById(R.id.out_ticket_seat);
         allPrice = findViewById(R.id.all_price);
+        movieTitle = findViewById(R.id.out_ticket_title);
+        cinemaTitle = findViewById(R.id.out_ticket_cinema);
         mIntent = getIntent();
         mSoldAndCheck = (SoldAndCheck) mIntent.getSerializableExtra("mSoldAndCheck");
         mMatch = mIntent.getParcelableExtra("match");
+        movieTitle.setText(mMatch.getString("movieTitle") + "   " + getIntent().getStringExtra("count") + "张");
+        cinemaTitle.setText(mMatch.getString("cinemaTitle"));
         seats[0] = mIntent.getStringExtra("first_seat");
         Log.d("seatlocation", "0" + seats[0]);
         seats[1] = mIntent.getStringExtra("second_seat");
@@ -112,12 +130,11 @@ public class OutTicketActivity extends AppCompatActivity {
         }
         for (int i = 0; i < c; i++) {
             mSoldAndCheck.isSold[xys[i][0]][xys[i][1]] = true;
-            builder.append(String.valueOf(xys[i][0])+"排"+String.valueOf(xys[i][1])+"座"+" ");
+            builder.append(String.valueOf(xys[i][0]+1) + "排" + String.valueOf(xys[i][1]) + "座" + " ");
         }
         //传出 这个东西 给李大桥的服务器
-        mTicketInformation = new TicketInformation(mMatch.getString("movieTitle"),mMatch.getString("cinemaTitle"),
-                mMatch.getString("date")+mMatch.getString("start_time")+"~"+mMatch.getString("end_time"),
-                mMatch.getString("shuxing"),mMatch.getString("place"),builder.toString(),mMatch.getString("poster"));
+        DataProducer.post( mMatch.getString("movieTitle"),mMatch.getString("cinemaTitle"),mMatch.getString("date") + mMatch.getString("start_time") + "~" + mMatch.getString("end_time"),
+                mMatch.getString("shuxing"), builder.toString(),mMatch.getString("place"),mMatch.getString("poster"),mMatch.getString("username"),getIntent().getStringExtra("count"));
         mSoldAndCheck.cleanCheck();
         mMatch.put("mSoldAndCheck", new Gson().toJson(mSoldAndCheck));
         mMatch.saveInBackground(new SaveCallback() {
